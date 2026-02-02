@@ -4,7 +4,9 @@ import { languages } from "../languages.js";
 function App() {
   const [currentWord, setCurrentWord] = useState("react");
 
-  //Renders languages span element
+  const alphabet = "abcdefghijklmnopqrstuvwxyz";
+
+  //Render languages span element
   const languageChipsEl = languages.map((language) => {
     return (
       <span
@@ -19,11 +21,17 @@ function App() {
     );
   });
 
-  //Renders current word in word tiles one by one
+  //Render current word in word tiles one by one
   const wordToGuessArr = currentWord.split("");
   console.log(wordToGuessArr);
   const tiles = wordToGuessArr.map((letter, index) => {
     return <span key={index}>{letter}</span>;
+  });
+
+  //Render alphabet
+  const alphabetArr = alphabet.split("");
+  const alphabetEl = alphabetArr.map((letter) => {
+    return <button>{letter}</button>;
   });
 
   //RETURN
@@ -42,6 +50,8 @@ function App() {
       </section>
       <section className="language-chips">{languageChipsEl}</section>
       <section className="word-tiles">{tiles}</section>
+      <section className="keyboard">{alphabetEl}</section>
+      <button className="new-game">New Game</button>
     </main>
   );
 }
