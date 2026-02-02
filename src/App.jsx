@@ -3,6 +3,7 @@ import { languages } from "../languages.js";
 
 function App() {
   const [currentWord, setCurrentWord] = useState("react");
+  const [guessedLetters, setGuessedLetters] = useState([]);
 
   const alphabet = "abcdefghijklmnopqrstuvwxyz";
 
@@ -23,16 +24,31 @@ function App() {
 
   //Render current word in word tiles one by one
   const wordToGuessArr = currentWord.split("");
-  console.log(wordToGuessArr);
   const tiles = wordToGuessArr.map((letter, index) => {
     return <span key={index}>{letter}</span>;
   });
 
   //Render alphabet
   const alphabetArr = alphabet.split("");
-  const alphabetEl = alphabetArr.map((letter) => {
-    return <button>{letter}</button>;
+  const keyboardEl = alphabetArr.map((letter) => {
+    return (
+      <button key={letter} onClick={() => handleKeyboardClicks(letter)}>
+        {letter}
+      </button>
+    );
   });
+
+  //Handles clicks on keyboard
+  function handleKeyboardClicks(letter) {
+    return setGuessedLetters((prev) => {
+      //if array doesn't include the clicked letter
+      //return existing array + letter
+      //otherwise return the array
+      return prev.includes(letter) ? [...prev] : [...prev, letter];
+    });
+  }
+
+  console.log(guessedLetters);
 
   //RETURN
   return (
@@ -50,7 +66,7 @@ function App() {
       </section>
       <section className="language-chips">{languageChipsEl}</section>
       <section className="word-tiles">{tiles}</section>
-      <section className="keyboard">{alphabetEl}</section>
+      <section className="keyboard">{keyboardEl}</section>
       <button className="new-game">New Game</button>
     </main>
   );
