@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { languages } from "../languages.js";
+import clsx from "clsx";
 
 function App() {
   const [currentWord, setCurrentWord] = useState("react");
@@ -23,16 +24,28 @@ function App() {
   });
 
   //Render current word in word tiles one by one
-  const wordToGuessArr = currentWord.split("");
-  const tiles = wordToGuessArr.map((letter, index) => {
+  const currentWordArr = currentWord.split("");
+  const tiles = currentWordArr.map((letter, index) => {
     return <span key={index}>{letter}</span>;
   });
 
-  //Render alphabet
+  //Render keyboard
   const alphabetArr = alphabet.split("");
   const keyboardEl = alphabetArr.map((letter) => {
+    const isGuessed = guessedLetters.includes(letter);
+    const isCorrect = isGuessed && currentWord.includes(letter);
+    const isWrong = isGuessed && !currentWord.includes(letter);
+    //Use clsx for manage the styling based on conditions
+    const className = clsx({
+      correct: isCorrect,
+      wrong: isWrong,
+    });
     return (
-      <button key={letter} onClick={() => handleKeyboardClicks(letter)}>
+      <button
+        className={className}
+        key={letter}
+        onClick={() => handleKeyboardClicks(letter)}
+      >
         {letter}
       </button>
     );
