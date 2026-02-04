@@ -45,7 +45,7 @@ function App() {
     );
   });
 
-  //Render keyboard
+  //Render keyboard && adds red/green on the keyboard based on wrong/correct guesses
   const alphabetArr = alphabet.split("");
   const keyboardEl = alphabetArr.map((letter) => {
     const isGuessed = guessedLetters.includes(letter);
@@ -67,7 +67,7 @@ function App() {
     );
   });
 
-  //Handles clicks on keyboard
+  //Handles clicks on keyboard and adds to the guessed letters if already not there
   function handleKeyboardClicks(letter) {
     return setGuessedLetters((prev) => {
       //if array doesn't include the clicked letter
