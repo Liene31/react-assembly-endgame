@@ -3,15 +3,23 @@ import { languages } from "../languages.js";
 import clsx from "clsx";
 
 function App() {
+  //State variables
   const [currentWord, setCurrentWord] = useState("react");
   const [guessedLetters, setGuessedLetters] = useState([]);
 
+  //Static variables
   const alphabet = "abcdefghijklmnopqrstuvwxyz";
+
+  // Derived variables
+  const wrongGuessCount = guessedLetters.filter((letter) => {
+    return !currentWord.includes(letter);
+  }).length;
 
   //Render languages span element
   const languageChipsEl = languages.map((language) => {
     return (
       <span
+        className="chip"
         key={language.name}
         style={{
           backgroundColor: language.backgroundColor,
@@ -26,7 +34,9 @@ function App() {
   //Render current word in word tiles one by one
   const currentWordArr = currentWord.split("");
   const tiles = currentWordArr.map((letter, index) => {
-    return <span key={index}>{letter}</span>;
+    return (
+      <span key={index}>{guessedLetters.includes(letter) ? letter : ""}</span>
+    );
   });
 
   //Render keyboard
