@@ -45,6 +45,14 @@ section.game-status {
   border-radius: 4px;
 }
 
+section.game-status.won {
+  background-color: #10a95b;
+}
+
+section.game-status.lost {
+  background-color: #ba2a2a;
+}
+
 section.game-status > p {
   margin: 5px;
 }
@@ -63,9 +71,8 @@ section.language-chips {
 
 span.chip {
   border-radius: 3px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.5rem;
+  padding: 4.5px;
+  position: relative;
 }
 
 /* Dimmed overlay with skull on "lost" languages */

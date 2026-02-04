@@ -10,16 +10,22 @@ function App() {
   //Static variables
   const alphabet = "abcdefghijklmnopqrstuvwxyz";
 
-  // Derived variables
-  const wrongGuessCount = guessedLetters.filter((letter) => {
-    return !currentWord.includes(letter);
-  }).length;
+  // Derived values
+  const wrongGuessCount = guessedLetters.filter(
+    (letter) => !currentWord.includes(letter),
+  ).length;
+  const isGameWon = currentWord
+    .split("")
+    .every((letter) => guessedLetters.includes(letter));
+  const isGameLost = wrongGuessCount >= languages.length - 1;
+  const isGameOver = isGameWon || isGameLost;
 
   //Render languages span element
-  const languageChipsEl = languages.map((language) => {
+  const languageChipsEl = languages.map((language, index) => {
+    const className = `chip ${wrongGuessCount > index ? "lost" : ""}`;
     return (
       <span
-        className="chip"
+        className={className}
         key={language.name}
         style={{
           backgroundColor: language.backgroundColor,
@@ -71,6 +77,35 @@ function App() {
     });
   }
 
+  // Change class in game-status depending if game is lost or won
+  const gameStatusClass = clsx("game-status", {
+    won: isGameWon,
+    lost: isGameLost,
+  });
+
+  //Determine content of the game-status depending if the game is lost or won
+  function renderGameStatus() {
+    if (!isGameOver) {
+      return null;
+    }
+
+    if (isGameWon) {
+      return (
+        <>
+          <h2>You win!</h2>
+          <p>Well done! 🎉</p>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <h2>Game over!</h2>
+          <p>You lose! Better start learning Assembly 😭</p>
+        </>
+      );
+    }
+  }
+
   //RETURN
   return (
     <main>
@@ -81,14 +116,11 @@ function App() {
           from Assembly!
         </p>
       </header>
-      <section className="game-status">
-        <h2>You win!</h2>
-        <p>Well done! 🎉</p>
-      </section>
+      <section className={gameStatusClass}>{renderGameStatus()}</section>
       <section className="language-chips">{languageChipsEl}</section>
       <section className="word-tiles">{tiles}</section>
       <section className="keyboard">{keyboardEl}</section>
-      <button className="new-game">New Game</button>
+      {isGameOver && <button className="new-game">New Game</button>}
     </main>
   );
 }
