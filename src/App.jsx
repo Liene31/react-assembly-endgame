@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { languages } from "../languages.js";
+import { getFarewellText, getRandomWord } from "../utils.js";
 import clsx from "clsx";
 
 function App() {
   //State variables
-  const [currentWord, setCurrentWord] = useState("react");
+  //*React will only call the function when it needs the initial value (which is when the component is initially rendered)
+  const [currentWord, setCurrentWord] = useState(() => getRandomWord()); //*Lazy state initialization
   const [guessedLetters, setGuessedLetters] = useState([]);
+
+  console.log(currentWord);
 
   //Static variables
   const alphabet = "abcdefghijklmnopqrstuvwxyz";
@@ -19,6 +23,9 @@ function App() {
     .every((letter) => guessedLetters.includes(letter));
   const isGameLost = wrongGuessCount >= languages.length - 1;
   const isGameOver = isGameWon || isGameLost;
+  const lastLetterGuessed = guessedLetters.at(-1);
+  const lastLetterIsWrong =
+    lastLetterGuessed && !currentWord.includes(lastLetterGuessed);
 
   //Render languages span element
   const languageChipsEl = languages.map((language, index) => {
@@ -58,6 +65,7 @@ function App() {
     });
     return (
       <button
+        disabled={isGameOver}
         className={className}
         key={letter}
         onClick={() => handleKeyboardClicks(letter)}
@@ -81,12 +89,19 @@ function App() {
   const gameStatusClass = clsx("game-status", {
     won: isGameWon,
     lost: isGameLost,
+    farewell: !isGameOver && lastLetterIsWrong,
   });
 
   //Determine content of the game-status depending if the game is lost or won
   function renderGameStatus() {
-    if (!isGameOver) {
-      return null;
+    if (!isGameOver && lastLetterIsWrong) {
+      return (
+        <>
+          <p className="farewell-text">
+            {getFarewellText(languages[wrongGuessCount - 1].name)}
+          </p>
+        </>
+      );
     }
 
     if (isGameWon) {
@@ -96,7 +111,8 @@ function App() {
           <p>Well done! 🎉</p>
         </>
       );
-    } else {
+    }
+    if (isGameLost) {
       return (
         <>
           <h2>Game over!</h2>
@@ -104,6 +120,7 @@ function App() {
         </>
       );
     }
+    return null;
   }
 
   //RETURN
