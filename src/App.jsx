@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { languages } from "../languages.js";
 import { getFarewellText, getRandomWord } from "../utils.js";
+import Confetti from "react-confetti";
 import clsx from "clsx";
 
 function App() {
@@ -47,8 +48,17 @@ function App() {
   //Render current word in word tiles one by one
   const currentWordArr = currentWord.split("");
   const tiles = currentWordArr.map((letter, index) => {
+    const className = clsx({
+      missed: isGameLost && !guessedLetters.includes(letter),
+    });
     return (
-      <span key={index}>{guessedLetters.includes(letter) ? letter : ""}</span>
+      <span key={index} className={className}>
+        {isGameLost
+          ? letter.toUpperCase()
+          : guessedLetters.includes(letter)
+            ? letter.toUpperCase()
+            : ""}
+      </span>
     );
   });
 
@@ -123,9 +133,16 @@ function App() {
     return null;
   }
 
+  // Resets the state and starts new game
+  function startNewGame() {
+    setCurrentWord(getRandomWord());
+    setGuessedLetters([]);
+  }
+
   //RETURN
   return (
     <main>
+      {isGameWon && <Confetti />}
       <header>
         <h1>Assembly: Endgame</h1>
         <p>
@@ -137,7 +154,11 @@ function App() {
       <section className="language-chips">{languageChipsEl}</section>
       <section className="word-tiles">{tiles}</section>
       <section className="keyboard">{keyboardEl}</section>
-      {isGameOver && <button className="new-game">New Game</button>}
+      {isGameOver && (
+        <button className="new-game" onClick={startNewGame}>
+          New Game
+        </button>
+      )}
     </main>
   );
 }
